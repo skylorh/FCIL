@@ -1,22 +1,22 @@
+from ast import main
+from torchvision import datasets
 from torchvision.datasets import CIFAR100
 import numpy as np
-from PIL import Image
 
 
-class iCIFAR100(CIFAR100):
-    def __init__(self,root,
-                 train=True,
-                 transform=None,
-                 target_transform=None,
-                 test_transform=None,
-                 target_test_transform=None,
-                 download=False):
-        super(iCIFAR100,self).__init__(root,
-                                       train=train,
-                                       transform=transform,
-                                       target_transform=target_transform,
-                                       download=download)
+class ISCXVPN2016():
+    def __init__(self,
+                root,
+                train=True,
+                transform=None,
+                target_transform=None,
+                test_transform=None,
+                target_test_transform=None,
+                ):
 
+        self.dataset=datasets.ImageFolder(root)
+        self.transform=transform
+        self.target_transform=target_transform
         self.target_test_transform=target_test_transform
         self.test_transform=test_transform
         self.TrainData = []
@@ -35,7 +35,7 @@ class iCIFAR100(CIFAR100):
     def getTestData(self, classes):
         datas,labels=[],[]
         for label in range(classes[0], classes[1]):
-            data = self.data[np.array(self.targets) == label]
+            data = self.dataset[np.array(self.dataset.targets) == label]
             datas.append(data)
             labels.append(np.full((data.shape[0]), label))
         self.TestData, self.TestLabels=self.concatenate(datas,labels)
@@ -49,7 +49,7 @@ class iCIFAR100(CIFAR100):
 
         # 增加新类的数据
         for label in classes:
-            data=self.data[np.array(self.targets)==label]
+            data=self.dataset[np.array(self.dataset.targets)==label]
             datas.append(data)
             labels.append(np.full((data.shape[0]),label))
         self.TrainData, self.TrainLabels=self.concatenate(datas,labels)
@@ -63,13 +63,13 @@ class iCIFAR100(CIFAR100):
 
         if group == 0:
             for label in classes:
-                data=self.data[np.array(self.targets)==label]
+                data=self.dataset[np.array(self.datasetset.targets)==label]
                 datas.append(data)
                 labels.append(np.full((data.shape[0]),label))
         self.TrainData, self.TrainLabels=self.concatenate(datas,labels)
 
     def getTrainItem(self,index):
-        img, target = Image.fromarray(self.TrainData[index]), self.TrainLabels[index]
+        img, target = self.TrainData[index], self.TrainLabels[index]
 
         if self.transform:
             img=self.transform(img)
@@ -80,7 +80,7 @@ class iCIFAR100(CIFAR100):
         return index,img,target
 
     def getTestItem(self,index):
-        img, target = Image.fromarray(self.TestData[index]), self.TestLabels[index]
+        img, target = self.TestData[index], self.TestLabels[index]
 
         if self.test_transform:
             img=self.test_transform(img)
@@ -104,6 +104,13 @@ class iCIFAR100(CIFAR100):
             return len(self.TestData)
 
     def get_image_class(self,label):
-        return self.data[np.array(self.targets)==label]
+        return self.dataset[np.array(self.dataset.targets)==label]
 
 
+
+# def main() -> int:
+#     train_datasets = ISCXVPN2016("./img_data", True)
+#     return 0
+
+# if __name__ == '__main__':
+#     main()

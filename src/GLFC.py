@@ -18,6 +18,7 @@ def get_one_hot(target, num_class, device):
     one_hot=one_hot.scatter(dim=1,index=target.long().view(-1,1),value=1.)
     return one_hot
 
+# 熵
 def entropy(input_):
     bs = input_.size(0)
     entropy = -input_ * torch.log(input_ + 1e-5)
@@ -63,12 +64,13 @@ class GLFC_model:
     def beforeTrain(self, task_id_new, group):
         if task_id_new != self.task_id_old:
             self.task_id_old = task_id_new
+            # numclass不断增加
             self.numclass = self.task_size * (task_id_new + 1)
             if group != 0:
                 if self.current_class != None:
                     self.last_class = self.current_class
                 self.current_class = random.sample([x for x in range(self.numclass - self.task_size, self.numclass)], 6)
-                # print(self.current_class)
+                print("beforeTrain: self.current_class", self.current_class)
             else:
                 self.last_class = None
 
@@ -176,7 +178,7 @@ class GLFC_model:
                 all_label = torch.cat((all_label, labels.long().cpu()), 0)
 
         overall_avg = torch.mean(all_ent).item()
-        print(overall_avg)
+        print("entropy_signal: overall_avg ", overall_avg)
         if overall_avg - self.last_entropy > 1.2:
             res = True
         

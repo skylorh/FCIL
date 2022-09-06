@@ -18,6 +18,10 @@ class Proxy_Data():
             con_data = np.concatenate((con_data, datas[i]), axis=0)
             con_label = np.concatenate((con_label,labels[i]), axis=0)
         return con_data, con_label
+    # datas = [[1,2],[3,4],[5,6]]
+    # labels = [['a'], ['b'], ['c']]
+    # (array([1, 2, 3, 4, 5, 6]), array(['a', 'b', 'c'], dtype='<U1'))
+
 
     def getTestData(self, new_set, new_set_label):
         datas, labels = [], []

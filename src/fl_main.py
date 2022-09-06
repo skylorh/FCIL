@@ -11,6 +11,7 @@ from ProxyServer import *
 from mini_imagenet import *
 from tiny_imagenet import *
 from option import args_parser
+from torchviz import make_dot
 
 args = args_parser()
 
@@ -28,6 +29,17 @@ setup_seed(args.seed)
 ## model settings
 model_g = network(args.numclass, feature_extractor)
 model_g = model_to_device(model_g, False, args.device)
+
+# # 模型结构可视化
+# for name,parameters in model_g.named_parameters():
+#     print(name,':',parameters.size())
+
+# x=torch.rand(64,3,32,32).to("cuda:0")
+# y=model_g(x)
+# MyConvNetVis = make_dot(y, params=dict(list(model_g.named_parameters()) + [('x', x)]))
+# MyConvNetVis.render(filename='./fig/myNetModel', view=False, format='png') # 保存 pdf 到指定路径不打开
+# exit()
+
 model_old = None
 
 train_transform = transforms.Compose([transforms.RandomCrop((args.img_size, args.img_size), padding=4),
@@ -39,8 +51,8 @@ test_transform = transforms.Compose([transforms.Resize(args.img_size), transform
                                     transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))])
 
 if args.dataset == 'cifar100':
-    train_dataset = iCIFAR100('dataset', transform=train_transform, download=True)
-    test_dataset = iCIFAR100('dataset', test_transform=test_transform, train=False, download=True)
+    train_dataset = iCIFAR100('dataset', transform=train_transform, download=False)
+    test_dataset = iCIFAR100('dataset', test_transform=test_transform, train=False, download=False)
 
 elif args.dataset == 'tiny_imagenet':
     train_dataset = Tiny_Imagenet('./tiny-imagenet-200', train_transform=train_transform, test_transform=test_transform)
@@ -82,6 +94,7 @@ for ep_g in range(args.epochs_global):
     model_old = proxy_server.model_back()
     task_id = ep_g // args.tasks_global
 
+    # 分出3类客户端
     if task_id != old_task_id and old_task_id != -1:
         overall_client = len(old_client_0) + len(old_client_1) + len(new_client)
         new_client = [i for i in range(overall_client, overall_client + args.task_size)]
@@ -92,6 +105,7 @@ for ep_g in range(args.epochs_global):
 
     if task_id != old_task_id and old_task_id != -1:
         classes_learned += args.task_size
+        # 全连接层fc增加新接入task的连接参数，其余层参数不变
         model_g.Incremental_learning(classes_learned)
         model_g = model_to_device(model_g, False, args.device)
     

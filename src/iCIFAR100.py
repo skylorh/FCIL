@@ -49,7 +49,13 @@ class iCIFAR100(CIFAR100):
 
         # 增加新类的数据
         for label in classes:
+            print("targets label: ", np.array(self.targets), label)
+            print("index: ", np.array(self.targets)==label)
             data=self.data[np.array(self.targets)==label]
+            print("data: ", data)
+            print("type data: ", type(data))
+            print("data.shape: ", data.shape)
+            print("label: ", np.full((data.shape[0]),label))
             datas.append(data)
             labels.append(np.full((data.shape[0]),label))
         self.TrainData, self.TrainLabels=self.concatenate(datas,labels)

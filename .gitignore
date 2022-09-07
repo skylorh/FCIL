@@ -1,2 +1,5 @@
 /src/model/
 /src/img_data/
+/src/dataset/
+/src/__pycache__/
+/src/training_log/

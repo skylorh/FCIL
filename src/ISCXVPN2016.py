@@ -1,7 +1,6 @@
-from ast import main
 from torchvision import datasets
-from torchvision.datasets import CIFAR100
 import numpy as np
+from PIL import Image
 
 
 class ISCXVPN2016():
@@ -35,7 +34,9 @@ class ISCXVPN2016():
     def getTestData(self, classes):
         datas,labels=[],[]
         for label in range(classes[0], classes[1]):
-            data = self.dataset[np.array(self.dataset.targets) == label]
+            indexs_bool = np.array(self.dataset.targets)==label
+            indexs = [idx for (idx,x) in enumerate(indexs_bool) if x]
+            data=np.array([np.array(self.dataset[idx][0]) for idx in indexs])
             datas.append(data)
             labels.append(np.full((data.shape[0]), label))
         self.TestData, self.TestLabels=self.concatenate(datas,labels)
@@ -49,7 +50,16 @@ class ISCXVPN2016():
 
         # 增加新类的数据
         for label in classes:
-            data=self.dataset[np.array(self.dataset.targets)==label]
+            # print("targets label: ", np.array(self.dataset.targets), label)
+            indexs_bool = np.array(self.dataset.targets)==label
+            indexs = [idx for (idx,x) in enumerate(indexs_bool) if x]
+            # print("indexs_bool: ", indexs_bool)
+            # print("indexs: ", indexs)
+            data=np.array([np.array(self.dataset[idx][0]) for idx in indexs])
+            # print("data: ", data)
+            # print("type data: ", type(data))
+            # print("data.shape: ", data.shape)
+            # print("label: ", np.full((data.shape[0]),label))
             datas.append(data)
             labels.append(np.full((data.shape[0]),label))
         self.TrainData, self.TrainLabels=self.concatenate(datas,labels)
@@ -63,13 +73,15 @@ class ISCXVPN2016():
 
         if group == 0:
             for label in classes:
-                data=self.dataset[np.array(self.datasetset.targets)==label]
+                indexs_bool = np.array(self.dataset.targets)==label
+                indexs = [idx for (idx,x) in enumerate(indexs_bool) if x]
+                data=np.array([np.array(self.dataset[idx][0]) for idx in indexs])
                 datas.append(data)
                 labels.append(np.full((data.shape[0]),label))
         self.TrainData, self.TrainLabels=self.concatenate(datas,labels)
 
     def getTrainItem(self,index):
-        img, target = self.TrainData[index], self.TrainLabels[index]
+        img, target = Image.fromarray(self.TrainData[index]), self.TrainLabels[index]
 
         if self.transform:
             img=self.transform(img)
@@ -77,10 +89,12 @@ class ISCXVPN2016():
         if self.target_transform:
             target=self.target_transform(target)
 
+
+        # print("getTrainItem: ", img.shape)
         return index,img,target
 
     def getTestItem(self,index):
-        img, target = self.TestData[index], self.TestLabels[index]
+        img, target = Image.fromarray(self.TestData[index]), self.TestLabels[index]
 
         if self.test_transform:
             img=self.test_transform(img)
@@ -104,8 +118,10 @@ class ISCXVPN2016():
             return len(self.TestData)
 
     def get_image_class(self,label):
-        return self.dataset[np.array(self.dataset.targets)==label]
-
+        indexs_bool = np.array(self.dataset.targets)==label
+        indexs = [idx for (idx,x) in enumerate(indexs_bool) if x]
+        data=np.array([np.array(self.dataset[idx][0]) for idx in indexs])
+        return data
 
 
 # def main() -> int:

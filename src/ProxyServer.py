@@ -41,11 +41,14 @@ class proxyServer:
             self.last_perf = 0
             self.best_model_1 = self.best_model_2
 
-        cur_perf = self.monitor()
-        print(cur_perf)
-        if cur_perf >= self.best_perf:
-            self.best_perf = cur_perf
-            self.best_model_2 = copy.deepcopy(self.model)
+        if self.monitor_dataset.__len__() != 0:
+            cur_perf = self.monitor()
+            print("cur_perf: ", cur_perf)
+            if cur_perf >= self.best_perf:
+                self.best_perf = cur_perf
+                self.best_model_2 = copy.deepcopy(self.model)
+        else:
+            print("proxyServer monitor_dataset len is 0!")
 
     def model_back(self):
         return [self.best_model_1, self.best_model_2]
@@ -95,7 +98,8 @@ class proxyServer:
                     # print('reconstruct_{}, {}-th'.format(label_i, j))
                     grad_truth_temp = self.pool_grad[grad_index[0][j]]
 
-                    dummy_data = torch.randn((1, 3, 32, 32)).to(self.device).requires_grad_(True)
+                    # dummy_data = torch.randn((1, 3, 32, 32)).to(self.device).requires_grad_(True)
+                    dummy_data = torch.randn((1, 3, 375, 4)).to(self.device).requires_grad_(True)
                     label_pred = torch.Tensor([label_i]).long().to(self.device).requires_grad_(False)
 
                     optimizer = torch.optim.LBFGS([dummy_data, ], lr=0.1)
@@ -122,7 +126,7 @@ class proxyServer:
                         current_loss = closure().item()
 
                         if iters == self.Iteration - 1:
-                            print(current_loss)
+                            print("reconstruction current_loss: ", current_loss)
 
                         if iters >= self.Iteration - self.num_image:
                             dummy_data_temp = np.asarray(tp(dummy_data.clone().squeeze(0).cpu()))

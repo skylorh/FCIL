@@ -69,7 +69,7 @@ class GLFC_model:
             if group != 0:
                 if self.current_class != None:
                     self.last_class = self.current_class
-                self.current_class = random.sample([x for x in range(self.numclass - self.task_size, self.numclass)], 1)
+                self.current_class = random.sample([x for x in range(self.numclass - self.task_size, self.numclass)], 2)
                 print("beforeTrain: self.current_class", self.current_class)
             else:
                 self.last_class = None
@@ -103,7 +103,7 @@ class GLFC_model:
         else:
             self.train_dataset.getTrainData(train_classes, [], [])
 
-        print("self.train_dataset", self.train_dataset)
+        # print("self.train_dataset", self.train_dataset)
         train_loader = DataLoader(dataset=self.train_dataset,
                                   shuffle=True,
                                   batch_size=self.batchsize,
@@ -180,7 +180,7 @@ class GLFC_model:
 
         overall_avg = torch.mean(all_ent).item()
         print("entropy_signal: overall_avg ", overall_avg)
-        if overall_avg - self.last_entropy > 1.2:
+        if overall_avg - self.last_entropy > 1.07:
             res = True
         
         self.last_entropy = overall_avg

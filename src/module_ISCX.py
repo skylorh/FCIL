@@ -60,3 +60,28 @@ class ISCX_module(nn.Module):
 
         out = torch.cat((out1,out2,out3,out4,out5),1)
         return out
+
+
+class ISCX_LeNet(nn.Module):
+    def __init__(self, channel=3, hideen=1128, num_classes=10):
+        super(ISCX_LeNet, self).__init__()
+        act = nn.Sigmoid
+        self.body = nn.Sequential(
+            nn.Conv2d(channel, 12, kernel_size=5, padding=5 // 2, stride=2),
+            act(),
+            nn.Conv2d(12, 12, kernel_size=5, padding=5 // 2, stride=2),
+            act(),
+            nn.Conv2d(12, 12, kernel_size=5, padding=5 // 2, stride=1),
+            act(),
+        )
+        self.fc = nn.Sequential(
+            nn.Linear(hideen, num_classes)
+        )
+
+    def forward(self, x):
+        # ISCX_LeNet x torch.Size([1, 3, 375, 4])
+        # print("ISCX_LeNet x", x.shape)
+        out = self.body(x)
+        out = out.view(out.size(0), -1)
+        out = self.fc(out)
+        return out

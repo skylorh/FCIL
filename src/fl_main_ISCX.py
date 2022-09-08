@@ -48,8 +48,8 @@ train_transform = transforms.Compose([transforms.ToTensor()])
 test_transform = transforms.Compose([transforms.ToTensor()])
 
 if args.dataset == 'iscxvpn2016':
-    train_dataset = ISCXVPN2016('./img_data', transform=train_transform)
-    test_dataset = ISCXVPN2016('./img_data', test_transform=test_transform, train=False)
+    train_dataset = ISCXVPN2016('./glfc_img', transform=train_transform)
+    test_dataset = ISCXVPN2016('./glfc_img', test_transform=test_transform, train=False)
 
 elif args.dataset == 'cifar100':
     train_dataset = iCIFAR100('dataset', transform=train_transform, download=False)
@@ -65,7 +65,7 @@ else:
     train_dataset.get_data()
     test_dataset = train_dataset
 
-encode_model = LeNet(num_classes=100)
+encode_model = ISCX_LeNet(num_classes=15)
 encode_model.apply(weights_init)
 
 for i in range(125):

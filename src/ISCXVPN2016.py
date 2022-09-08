@@ -122,11 +122,3 @@ class ISCXVPN2016():
         indexs = [idx for (idx,x) in enumerate(indexs_bool) if x]
         data=np.array([np.array(self.dataset[idx][0]) for idx in indexs])
         return data
-
-
-# def main() -> int:
-#     train_datasets = ISCXVPN2016("./img_data", True)
-#     return 0
-
-# if __name__ == '__main__':
-#     main()

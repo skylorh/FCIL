@@ -48,8 +48,8 @@ train_transform = transforms.Compose([transforms.ToTensor()])
 test_transform = transforms.Compose([transforms.ToTensor()])
 
 if args.dataset == 'iscxvpn2016':
-    train_dataset = ISCXVPN2016('./glfc_img', transform=train_transform)
-    test_dataset = ISCXVPN2016('./glfc_img', test_transform=test_transform, train=False)
+    train_dataset = ISCXVPN2016('./glfc_img_train', transform=train_transform)
+    test_dataset = ISCXVPN2016('./glfc_img_test', test_transform=test_transform, train=False)
 
 elif args.dataset == 'cifar100':
     train_dataset = iCIFAR100('dataset', transform=train_transform, download=False)

@@ -63,7 +63,7 @@ class ISCX_module(nn.Module):
 
 
 class ISCX_LeNet(nn.Module):
-    def __init__(self, channel=3, hideen=1128, num_classes=10):
+    def __init__(self, channel=3, hideen=1128, num_classes=15):
         super(ISCX_LeNet, self).__init__()
         act = nn.Sigmoid
         self.body = nn.Sequential(

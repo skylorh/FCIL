@@ -179,8 +179,8 @@ class GLFC_model:
                 all_label = torch.cat((all_label, labels.long().cpu()), 0)
 
         overall_avg = torch.mean(all_ent).item()
-        print("entropy_signal: overall_avg ", overall_avg)
-        if overall_avg - self.last_entropy > 1.07:
+        print("entropy_signal: diff ", overall_avg - self.last_entropy)
+        if overall_avg - self.last_entropy > 1.08:
             res = True
         
         self.last_entropy = overall_avg

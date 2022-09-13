@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class ISCX_module(nn.Module):
-    def __init__(self, num_classes=100):
+    def __init__(self, num_classes=15):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=(1,1))
         self.flatten1 = nn.Flatten()

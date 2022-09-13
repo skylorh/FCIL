@@ -22,7 +22,7 @@ import torchvision.datasets as dset
 args = args_parser()
 
 feature_extractor = ISCX_module()
-model_g = network(args.numclass, feature_extractor)
+model_g = network(15, feature_extractor)
 model_g = model_to_device(model_g, False, args.device)
 
 train_transform = transforms.Compose([transforms.ToTensor()])
@@ -91,11 +91,14 @@ def get_one_hot(target, num_class, device):
 def _compute_loss_ISCX(model, imgs, label, device):
     output = model(imgs)
     target = get_one_hot(label, 15, device)
+    # print(target.shape)
+    # print(output.shape)
+
     output, target = output.cuda(device), target.cuda(device)
-    # print("target: ", target)
-    # print("output: ", output)
 
     loss_cur = torch.mean(F.binary_cross_entropy_with_logits(output, target, reduction='none'))
+    # loss_cur = F.binary_cross_entropy_with_logits(output, target, reduction='none')
+
     return loss_cur
 
 # train model
